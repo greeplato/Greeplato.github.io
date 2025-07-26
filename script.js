@@ -62,3 +62,16 @@ socket.onerror = (error) => {
 socket.onclose = () => {
   addMessage("🚫 تم قطع الاتصال بالخادم.", "system");
 };
+//التعديل الجديد
+document.addEventListener("DOMContentLoaded", () => {
+  const gate = document.getElementById("gate");
+  const gateInput = document.getElementById("gateInput");
+  const chatUI = document.getElementById("chatUI");
+
+  gateInput.addEventListener("keyup", function (e) {
+    if (e.key === "Enter" && gateInput.value.trim().toLowerCase() === "love") {
+      gate.style.display = "none";
+      chatUI.style.display = "block";
+    }
+  });
+});
