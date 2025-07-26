@@ -1,59 +1,184 @@
 index.html
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" class="dark">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>💫 FaNa❤️</title>
-  <link rel="stylesheet" href="output.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>دردشة NANA & FAISAL</title>
   <style>
+    /* تصميم بسيط ونظيف */
     body {
-      background-image: url('https://i.imgur.com/O7v6F5B.jpg');
-      background-size: cover;
-      background-position: center;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #2a1a4d, #ff6f91);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
     }
-    .overlay {
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(5px);
+
+    header {
+      padding: 1rem 1.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    header h1 {
+      font-weight: 700;
+      font-size: 1.8rem;
+      letter-spacing: 0.15em;
+    }
+
+    button#toggleTheme {
+      background: #fff;
+      color: #2a1a4d;
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    button#toggleTheme:hover {
+      background: #ffd1dc;
+    }
+
+    #chatUI {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+    }
+
+    #chatBox {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .message {
+      max-width: 60%;
+      padding: 0.6rem 1rem;
+      border-radius: 20px;
+      line-height: 1.4;
+      font-size: 1rem;
+      word-break: break-word;
+      user-select: text;
+    }
+
+    .message.locked {
+      background-color: #d6336c;
+      align-self: flex-start;
+    }
+    .message.unlocked {
+      background-color: #6f42c1;
+      align-self: flex-start;
+    }
+    .message.system {
+      background-color: #ff4081;
+      font-weight: bold;
+      align-self: center;
+      border-radius: 30px;
+    }
+
+    form {
+      display: flex;
+      gap: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid #ff4081;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    input[type="text"]::placeholder {
+      color: #aaa;
+      font-style: italic;
+    }
+
+    button#sendBtn {
+      background-color: #ff4081;
+      border: none;
+      padding: 0 1.5rem;
+      border-radius: 25px;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button#sendBtn:hover {
+      background-color: #e91e63;
     }
   </style>
 </head>
-<body class="text-white">
-  <header class="overlay py-4 px-6 flex justify-between items-center shadow">
-    <h1 class="text-3xl font-bold tracking-widest text-pink-400">🌌 FaNa❤️</h1>
-    <button onclick="toggleTheme()" class="bg-white text-gray-800 px-4 py-1 rounded shadow">🌓 تغيير الوضع</button>
+<body>
+  <header>
+    <h1>NANA & FAISAL 🌌</h1>
+    <button id="toggleTheme">تغيير الوضع</button>
   </header>
-  <section id="chatUI" class="h-[calc(100vh-80px)] flex flex-col overlay">
-    <div id="chatBox" class="flex-1 overflow-y-auto p-4 space-y-3">
-      <div class="bg-pink-500 text-white max-w-xs rounded-lg px-4 py-2 self-start">🔒 اكتب 'Love' لفتح المحادثة</div>
+
+  <section id="chatUI">
+    <div id="chatBox">
+      <div class="message locked">🔒 اكتب "Love" لفتح المحادثة</div>
     </div>
-    <form id="messageForm" class="flex p-4 border-t border-pink-300">
-      <input id="msgInput" type="text" placeholder="أكتب 'Love' لفتح الشات..." class="flex-1 px-4 py-2 rounded-l border dark:bg-gray-700 dark:text-white" />
-      <button type="submit" class="bg-pink-500 text-white px-6 py-2 rounded-r hover:bg-pink-600">إرسال</button>
+    <form id="messageForm" autocomplete="off">
+      <input id="msgInput" type="text" placeholder='اكتب "Love" لفتح الشات...' required />
+      <button id="sendBtn" type="submit">إرسال</button>
     </form>
   </section>
+
   <script>
-    function toggleTheme() {
-      document.documentElement.classList.toggle('dark');
-    }
-    const ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/chat');
+    // تفعيل الوضع الداكن (يمكن تطويره لاحقًا)
+    const toggleThemeBtn = document.getElementById('toggleTheme');
+    toggleThemeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+    });
+
+    // إعداد اتصال WebSocket
     const chatBox = document.getElementById('chatBox');
     const form = document.getElementById('messageForm');
     const input = document.getElementById('msgInput');
 
+    const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+    const ws = new WebSocket(`${protocol}://${location.host}/chat`);
+
     ws.onmessage = e => {
-      const div = document.createElement('div');
-      div.className = e.data.startsWith('✅') || e.data.startsWith('🔒') ? 'bg-pink-500' : 'bg-purple-600';
-      div.className += ' text-white max-w-xs rounded-lg px-4 py-2';
-      div.innerText = e.data;
-      chatBox.appendChild(div);
+      const msgText = e.data;
+      const msgDiv = document.createElement('div');
+      msgDiv.textContent = msgText;
+
+      if(msgText.startsWith('🔒')) {
+        msgDiv.className = 'message locked';
+      } else if(msgText.startsWith('✅') || msgText.startsWith('❌')) {
+        msgDiv.className = 'message system';
+      } else {
+        msgDiv.className = 'message unlocked';
+      }
+
+      chatBox.appendChild(msgDiv);
       chatBox.scrollTop = chatBox.scrollHeight;
     };
 
     form.addEventListener('submit', e => {
       e.preventDefault();
-      const msg = input.value.trim();
-      if (!msg) return;
-      ws.send(msg);
+      if(!input.value.trim()) return;
+      ws.send(input.value.trim());
       input.value = '';
     });
   </script>
